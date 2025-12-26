@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/useAuthStore';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 export function Header() {
   const pathname = usePathname();
@@ -62,6 +63,7 @@ export function Header() {
         <div className="flex items-center space-x-reverse space-x-4">
           {isAuthenticated ? (
             <>
+              <NotificationBell />
               <div className="hidden md:flex items-center space-x-reverse space-x-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={user?.avatar} />
