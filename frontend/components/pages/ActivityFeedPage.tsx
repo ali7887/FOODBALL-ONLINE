@@ -116,10 +116,14 @@ export function ActivityFeedPage() {
         {/* Activities List */}
         {loading ? (
           <Card className="border-gray-200">
+            <CardHeader className="bg-gray-50">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-64 mt-2" />
+            </CardHeader>
             <CardContent className="pt-6">
               <div className="space-y-4">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="flex items-center space-x-reverse space-x-4">
+                  <div key={i} className="flex items-center space-x-reverse space-x-4 p-4">
                     <Skeleton className="h-12 w-12 rounded-full" />
                     <div className="flex-1 space-y-2">
                       <Skeleton className="h-4 w-3/4" />
@@ -156,10 +160,10 @@ export function ActivityFeedPage() {
                   return (
                     <div
                       key={activity._id}
-                      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-all duration-200 cursor-pointer group"
                     >
                       <div className="flex items-center space-x-reverse space-x-4 flex-1">
-                        <div className={`flex items-center justify-center w-12 h-12 rounded-full ${colorClass}`}>
+                        <div className={`flex items-center justify-center w-12 h-12 rounded-full ${colorClass} group-hover:scale-110 transition-transform`}>
                           <Icon className="h-6 w-6" />
                         </div>
                         <div className="flex-1">

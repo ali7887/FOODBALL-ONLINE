@@ -59,26 +59,60 @@ export function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container space-y-6">
-          <Card>
-            <CardContent className="pt-6">
+          {/* Header Skeleton */}
+          <Card className="border-gray-200">
+            <CardContent className="p-6">
               <div className="flex items-center space-x-reverse space-x-6">
-                <Skeleton className="h-20 w-20 rounded-full" />
-                <div className="flex-1 space-y-2">
+                <Skeleton className="h-24 w-24 rounded-full" />
+                <div className="flex-1 space-y-3">
                   <Skeleton className="h-8 w-48" />
                   <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-6 w-24" />
                 </div>
+                <Skeleton className="h-20 w-32 rounded-lg" />
               </div>
             </CardContent>
           </Card>
+          {/* Level Progress Skeleton */}
+          <Card className="border-gray-200">
+            <CardHeader className="bg-gray-100">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-4 w-48 mt-2" />
+            </CardHeader>
+            <CardContent className="p-6">
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-3 w-full" />
+            </CardContent>
+          </Card>
+          {/* Stats Grid Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[...Array(3)].map((_, i) => (
-              <Card key={i}>
+              <Card key={i} className="border-gray-200">
                 <CardContent className="pt-6">
-                  <Skeleton className="h-16 w-full" />
+                  <div className="flex items-center space-x-reverse space-x-3">
+                    <Skeleton className="h-12 w-12 rounded-lg" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-8 w-16" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+          {/* Badges Skeleton */}
+          <Card className="border-gray-200">
+            <CardHeader className="bg-gray-50">
+              <Skeleton className="h-6 w-32" />
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <Skeleton key={i} className="h-32 w-full rounded-lg" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -86,12 +120,16 @@ export function ProfilePage() {
 
   if (!progress) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+        <Card className="w-full max-w-md border-gray-200">
           <CardContent className="pt-6 text-center py-12">
-            <p className="text-gray-600">لطفاً وارد حساب کاربری‌ات بشو تا پروفایلت رو ببینی 😊</p>
+            <div className="text-6xl mb-4">👤</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">پروفایل پیدا نشد</h2>
+            <p className="text-gray-600 mb-6">لطفاً وارد حساب کاربری‌ات بشو تا پروفایلت رو ببینی 😊</p>
             <Link href="/login">
-              <Button className="mt-4 bg-tm-green hover:bg-tm-green/90">ورود</Button>
+              <Button className="bg-tm-green hover:bg-tm-green/90 text-white tm-button">
+                ورود به حساب کاربری
+              </Button>
             </Link>
           </CardContent>
         </Card>
@@ -200,11 +238,16 @@ export function ProfilePage() {
           <CardContent className="p-6">
             {badges.length === 0 ? (
               <div className="text-center py-12">
-                <div className="text-6xl mb-4">🏆</div>
-                <p className="text-gray-600 mb-2">هنوز نشانی نگرفتی!</p>
-                <p className="text-sm text-gray-500">
+                <div className="text-6xl mb-4 animate-bounce">🏆</div>
+                <p className="text-gray-600 mb-2 font-semibold">هنوز نشانی نگرفتی!</p>
+                <p className="text-sm text-gray-500 mb-4">
                   شروع کن به رأی دادن و شرکت در فعالیت‌ها تا نشان بگیری
                 </p>
+                <Link href="/players">
+                  <Button variant="outline" size="sm" className="border-tm-green text-tm-green hover:bg-tm-green hover:text-white">
+                    شروع رأی دادن
+                  </Button>
+                </Link>
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -241,17 +284,21 @@ export function ProfilePage() {
           <CardContent className="p-0">
             {activities.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-600">هیچ فعالیتی ثبت نشده</p>
+                <div className="text-5xl mb-4">📋</div>
+                <p className="text-gray-600 mb-2 font-semibold">هیچ فعالیتی ثبت نشده</p>
+                <p className="text-sm text-gray-500">
+                  فعالیت‌های تو اینجا نمایش داده می‌شه
+                </p>
               </div>
             ) : (
               <div className="divide-y divide-gray-200">
                 {activities.map((activity: any, index: number) => (
                   <div
                     key={activity._id}
-                    className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                    className="flex items-center justify-between p-4 hover:bg-gray-50 transition-all duration-200 cursor-pointer group"
                   >
                     <div className="flex items-center space-x-reverse space-x-4 flex-1">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-tm-green/10">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-tm-green/10 group-hover:bg-tm-green/20 transition-colors">
                         <CheckCircle className="h-5 w-5 text-tm-green" />
                       </div>
                       <div className="flex-1">

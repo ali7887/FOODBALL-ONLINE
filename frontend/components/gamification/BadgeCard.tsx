@@ -31,7 +31,7 @@ const rarityColors: { [key: string]: string } = {
 export function BadgeCard({ badge, earnedAt, onClick }: BadgeCardProps) {
   return (
     <Card
-      className={`border-gray-200 hover:border-tm-green hover:shadow-md transition-all cursor-pointer bg-white ${
+      className={`border-gray-200 hover:border-tm-green hover:shadow-lg transition-all duration-200 cursor-pointer bg-white transform hover:scale-105 ${
         onClick ? 'cursor-pointer' : ''
       }`}
       onClick={onClick}
