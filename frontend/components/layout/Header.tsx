@@ -1,13 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Users, TrendingUp, Trophy, User } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, Users, TrendingUp, Trophy, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   const navItems = [
     { href: '/', label: 'خانه', icon: Home },
@@ -16,10 +20,19 @@ export function Header() {
     { href: '/leaderboard', label: 'جدول امتیازات', icon: Trophy },
   ];
 
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+    // Show success message (you can use a toast library here)
+    if (typeof window !== 'undefined') {
+      alert('با موفقیت از حساب کاربری خارج شدید 👋');
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href="/" className="flex items-center space-x-reverse space-x-2">
           <span className="text-2xl font-bold bg-gradient-to-r from-primary to-food-orange bg-clip-text text-transparent">
             Foodball
           </span>
@@ -47,19 +60,48 @@ export function Header() {
         </nav>
 
         <div className="flex items-center space-x-reverse space-x-4">
-          <Link href="/login">
-            <Button variant="outline" size="sm">
-              ورود
-            </Button>
-          </Link>
-          <Link href="/profile">
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <div className="hidden md:flex items-center space-x-reverse space-x-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user?.avatar} />
+                  <AvatarFallback>
+                    {user?.displayName?.[0] || user?.username?.[0] || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-sm">
+                  <p className="font-medium">
+                    سلام {user?.displayName || user?.username} 👋
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {user?.points || 0} امتیاز
+                  </p>
+                </div>
+              </div>
+              <Link href="/profile">
+                <Button variant="ghost" size="icon" title="پروفایل">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                title="خروج"
+              >
+                <LogOut className="h-4 w-4 ml-2" />
+                <span className="hidden md:inline">خروج</span>
+              </Button>
+            </>
+          ) : (
+            <Link href="/login">
+              <Button variant="outline" size="sm">
+                ورود / ثبت‌نام
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </header>
   );
 }
-

@@ -2,6 +2,13 @@ import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'ax
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Store reference will be set dynamically
+let authStore: any = null;
+
+export function setAuthStore(store: any) {
+  authStore = store;
+}
+
 class ApiClient {
   private client: AxiosInstance;
 
@@ -18,7 +25,7 @@ class ApiClient {
   }
 
   private setupInterceptors() {
-    // Request interceptor - add auth token
+    // Request interceptor - add auth token from store
     this.client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         const token = this.getToken();
@@ -35,7 +42,10 @@ class ApiClient {
       (response) => response,
       (error: AxiosError) => {
         if (error.response?.status === 401) {
-          // Unauthorized - clear token and redirect to login
+          // Unauthorized - clear auth state
+          if (authStore) {
+            authStore.getState().logout();
+          }
           this.clearToken();
           if (typeof window !== 'undefined') {
             window.location.href = '/login';
@@ -61,11 +71,20 @@ class ApiClient {
   }
 
   private getToken(): string | null {
+    // Try to get from store first
+    if (authStore) {
+      const state = authStore.getState();
+      if (state.token) {
+        return state.token;
+      }
+    }
+    // Fallback to localStorage
     if (typeof window === 'undefined') return null;
     return localStorage.getItem('auth_token');
   }
 
   private setToken(token: string) {
+    // Store in localStorage for backward compatibility
     if (typeof window !== 'undefined') {
       localStorage.setItem('auth_token', token);
     }
@@ -99,6 +118,9 @@ class ApiClient {
 
   logout() {
     this.clearToken();
+    if (authStore) {
+      authStore.getState().logout();
+    }
     if (typeof window !== 'undefined') {
       window.location.href = '/';
     }
@@ -220,4 +242,3 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
-

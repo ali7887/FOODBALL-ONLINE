@@ -1,6 +1,10 @@
 import { ProfilePage } from '@/components/pages/ProfilePage';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function Page() {
-  return <ProfilePage />;
+  return (
+    <ProtectedRoute>
+      <ProfilePage />
+    </ProtectedRoute>
+  );
 }
-
