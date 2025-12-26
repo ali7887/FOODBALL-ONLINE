@@ -181,12 +181,17 @@ export function CommentList({ entityType, entityId, refreshTrigger }: CommentLis
                       </Button>
                     )}
                   </div>
-                  <p
-                    className="text-sm text-gray-700 mb-3 leading-relaxed"
-                    dangerouslySetInnerHTML={{
-                      __html: parseContent(comment.content, comment.mentions),
-                    }}
-                  />
+                  <div className="text-sm text-gray-700 mb-3 leading-relaxed whitespace-pre-wrap">
+                    {comment.mentions && comment.mentions.length > 0 ? (
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: parseContent(comment.content, comment.mentions),
+                        }}
+                      />
+                    ) : (
+                      comment.content
+                    )}
+                  </div>
                   <ReactionBar
                     targetType="comment"
                     targetId={comment._id}

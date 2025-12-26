@@ -34,11 +34,14 @@ class CommentService {
 
     // Create notifications for mentioned users
     if (mentions.length > 0) {
+      const commentUser = await User.findById(userId);
+      const userName = commentUser?.displayName || commentUser?.username || 'کاربر';
+      
       for (const mentionedUserId of mentions) {
         await activityLogger.logActivity({
           user: mentionedUserId,
           activityType: 'user_mentioned',
-          action: `${(await User.findById(userId)).displayName || (await User.findById(userId)).username} شما را منشن کرد`,
+          action: `${userName} شما را منشن کرد`,
           targetType: 'comment',
           targetId: comment._id,
           metadata: { mentionedBy: userId },
