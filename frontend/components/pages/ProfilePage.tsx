@@ -15,6 +15,7 @@ import { BadgeCard } from '@/components/gamification/BadgeCard';
 import { DailyChallenge } from '@/components/engagement/DailyChallenge';
 import { WeeklyBadge } from '@/components/engagement/WeeklyBadge';
 import { SmartCTA } from '@/components/engagement/SmartCTA';
+import { GamificationPath } from '@/components/gamification/GamificationPath';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -231,6 +232,15 @@ export function ProfilePage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Gamification Path */}
+        <GamificationPath
+          currentPoints={level.points}
+          currentLevel={level.current}
+          badgeCount={badgeCount}
+          rank={0} // TODO: Get from API
+          pointsToNextLevel={level.pointsToNextLevel}
+        />
 
         {/* Level Progress - Transfermarkt style */}
         <Card className="border-gray-200">
