@@ -1,10 +1,10 @@
-import { LeaderboardPage } from '@/components/pages/LeaderboardPage';
+import { ActivityFeedPage } from '@/components/pages/ActivityFeedPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function Page() {
   return (
     <ProtectedRoute>
-      <LeaderboardPage />
+      <ActivityFeedPage />
     </ProtectedRoute>
   );
 }

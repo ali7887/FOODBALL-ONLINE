@@ -6,14 +6,20 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import { apiClient } from '@/lib/api-client';
-import { Trophy, Award, TrendingUp, Activity, Star } from 'lucide-react';
+import { Trophy, Award, TrendingUp, Activity, Star, CheckCircle } from 'lucide-react';
+import { StatsCard } from '@/components/gamification/StatsCard';
+import { LevelIndicator } from '@/components/gamification/LevelIndicator';
+import { BadgeCard } from '@/components/gamification/BadgeCard';
+import Link from 'next/link';
 
 export function ProfilePage() {
   const [progress, setProgress] = useState<any>(null);
   const [badges, setBadges] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [checkingBadges, setCheckingBadges] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -24,7 +30,7 @@ export function ProfilePage() {
       const [progressRes, badgesRes, activitiesRes] = await Promise.all([
         apiClient.getProgress(),
         apiClient.getMyBadges(),
-        apiClient.getActivityFeed({ limit: 20 }),
+        apiClient.getActivityFeed({ limit: 10 }),
       ]);
 
       setProgress(progressRes.data);
@@ -38,195 +44,241 @@ export function ProfilePage() {
   }
 
   async function handleCheckBadges() {
+    setCheckingBadges(true);
     try {
       await apiClient.checkBadges();
       fetchData();
     } catch (error) {
       console.error('Error checking badges:', error);
+    } finally {
+      setCheckingBadges(false);
     }
   }
 
   if (loading) {
     return (
-      <div className="container py-8 space-y-6">
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-64 w-full" />
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container space-y-6">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-reverse space-x-6">
+                <Skeleton className="h-20 w-20 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-8 w-48" />
+                  <Skeleton className="h-4 w-32" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <Card key={i}>
+                <CardContent className="pt-6">
+                  <Skeleton className="h-16 w-full" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!progress) {
     return (
-      <div className="container py-8 text-center">
-        <p className="text-muted-foreground">لطفاً وارد حساب کاربری‌ات بشو تا پروفایلت رو ببینی 😊</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6 text-center py-12">
+            <p className="text-gray-600">لطفاً وارد حساب کاربری‌ات بشو تا پروفایلت رو ببینی 😊</p>
+            <Link href="/login">
+              <Button className="mt-4 bg-tm-green hover:bg-tm-green/90">ورود</Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   const { user, level, badgeCount, activityStats, totalActivities } = progress;
+  const progressPercentage = (level.points % 100);
 
   return (
-    <div className="container py-8 space-y-6">
-      {/* User Header */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center space-x-reverse space-x-6">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={user.avatar} />
-              <AvatarFallback>{user.displayName?.[0] || user.username?.[0]}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold">{user.displayName || user.username}</h1>
-              <p className="text-muted-foreground">@{user.username}</p>
-              {user.favoriteClub && (
-                <Badge variant="outline" className="mt-2">
-                  {user.favoriteClub.name}
-                </Badge>
-              )}
-            </div>
-            <div className="text-left">
-              <div className="text-3xl font-bold text-food-yellow">{user.points || 0}</div>
-              <div className="text-sm text-muted-foreground">امتیاز</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Level Progress */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-reverse space-x-2">
-            <Star className="h-5 w-5 text-food-yellow" />
-            <span>سطح {level.current}</span>
-          </CardTitle>
-          <CardDescription>
-            {level.pointsToNextLevel} امتیاز تا سطح {level.current + 1}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Progress value={(level.points % 100) / 100 * 100} className="h-3" />
-          <div className="flex items-center justify-between mt-2 text-sm text-muted-foreground">
-            <span>{level.points % 100} / 100</span>
-            <span>مجموع: {level.points} امتیاز</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-reverse space-x-2">
-              <Trophy className="h-5 w-5 text-food-yellow" />
-              <div>
-                <div className="text-2xl font-bold">{badgeCount}</div>
-                <div className="text-sm text-muted-foreground">نشان کسب شده</div>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container space-y-6">
+        {/* User Header - Transfermarkt style */}
+        <Card className="border-gray-200">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-reverse space-x-6">
+              <Avatar className="h-24 w-24 border-2 border-tm-green">
+                <AvatarImage src={user.avatar} />
+                <AvatarFallback className="bg-tm-green text-white text-2xl">
+                  {user.displayName?.[0] || user.username?.[0]}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-900">{user.displayName || user.username}</h1>
+                <p className="text-gray-600 mt-1">@{user.username}</p>
+                {user.favoriteClub && (
+                  <Badge variant="outline" className="mt-2 border-tm-green text-tm-green">
+                    {user.favoriteClub.name}
+                  </Badge>
+                )}
+              </div>
+              <div className="text-left bg-tm-green/10 px-6 py-4 rounded-lg border border-tm-green/20">
+                <div className="text-4xl font-bold text-tm-green">{user.points || 0}</div>
+                <div className="text-sm text-gray-600 mt-1">امتیاز کل</div>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-reverse space-x-2">
-              <Activity className="h-5 w-5 text-primary" />
-              <div>
-                <div className="text-2xl font-bold">{totalActivities}</div>
-                <div className="text-sm text-muted-foreground">فعالیت کل</div>
-              </div>
-            </div>
+
+        {/* Level Progress - Transfermarkt style */}
+        <Card className="border-gray-200">
+          <CardHeader className="bg-tm-green text-white">
+            <CardTitle className="flex items-center space-x-reverse space-x-2">
+              <Star className="h-5 w-5" />
+              <span>سطح {level.current}</span>
+            </CardTitle>
+            <CardDescription className="text-white/90">
+              {level.pointsToNextLevel} امتیاز تا سطح {level.current + 1}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-6">
+            <LevelIndicator
+              currentLevel={level.current}
+              currentPoints={level.points}
+              pointsToNextLevel={level.pointsToNextLevel}
+              totalPoints={level.points}
+            />
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-reverse space-x-2">
-              <TrendingUp className="h-5 w-5 text-food-orange" />
+
+        {/* Stats Grid - Transfermarkt table style */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatsCard
+            icon={Trophy}
+            value={badgeCount}
+            label="نشان کسب شده"
+            color="green"
+          />
+          <StatsCard
+            icon={Activity}
+            value={totalActivities}
+            label="فعالیت کل"
+            color="blue"
+          />
+          <StatsCard
+            icon={TrendingUp}
+            value={activityStats.vote_market_value?.count || 0}
+            label="رأی داده شده"
+            color="orange"
+          />
+        </div>
+
+        {/* Badges Collection - Transfermarkt style */}
+        <Card className="border-gray-200">
+          <CardHeader className="bg-gray-50 border-b border-gray-200">
+            <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold">
-                  {activityStats.vote_market_value?.count || 0}
-                </div>
-                <div className="text-sm text-muted-foreground">رأی داده شده</div>
+                <CardTitle className="flex items-center space-x-reverse space-x-2 text-gray-900">
+                  <Award className="h-5 w-5 text-tm-green" />
+                  <span>مجموعه نشان‌ها</span>
+                </CardTitle>
+                <CardDescription className="mt-1">دستاوردها و نقاط عطف تو</CardDescription>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCheckBadges}
+                disabled={checkingBadges}
+                className="border-tm-green text-tm-green hover:bg-tm-green hover:text-white"
+              >
+                {checkingBadges ? 'در حال بررسی...' : 'بررسی نشان‌های جدید'}
+              </Button>
             </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            {badges.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🏆</div>
+                <p className="text-gray-600 mb-2">هنوز نشانی نگرفتی!</p>
+                <p className="text-sm text-gray-500">
+                  شروع کن به رأی دادن و شرکت در فعالیت‌ها تا نشان بگیری
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {badges.map((badge: any) => (
+                  <BadgeCard
+                    key={badge._id}
+                    badge={badge}
+                    earnedAt={badge.earnedAt ? new Date(badge.earnedAt) : undefined}
+                  />
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recent Activities - Transfermarkt table style */}
+        <Card className="border-gray-200">
+          <CardHeader className="bg-gray-50 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center space-x-reverse space-x-2 text-gray-900">
+                  <Activity className="h-5 w-5 text-tm-green" />
+                  <span>فعالیت‌های اخیر</span>
+                </CardTitle>
+                <CardDescription className="mt-1">آخرین کارها و دستاوردهای تو</CardDescription>
+              </div>
+              <Link href="/activity">
+                <Button variant="outline" size="sm" className="border-tm-green text-tm-green hover:bg-tm-green hover:text-white">
+                  مشاهده همه
+                </Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            {activities.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600">هیچ فعالیتی ثبت نشده</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-200">
+                {activities.map((activity: any, index: number) => (
+                  <div
+                    key={activity._id}
+                    className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center space-x-reverse space-x-4 flex-1">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-tm-green/10">
+                        <CheckCircle className="h-5 w-5 text-tm-green" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {new Date(activity.timestamp).toLocaleString('fa-IR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    {activity.pointsEarned > 0 && (
+                      <Badge className="bg-tm-green text-white border-0">
+                        +{activity.pointsEarned} امتیاز
+                      </Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
-
-      {/* Badges */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center space-x-reverse space-x-2">
-                <Award className="h-5 w-5 text-food-orange" />
-                <span>نشان‌ها</span>
-              </CardTitle>
-              <CardDescription>دستاوردها و نقاط عطف تو</CardDescription>
-            </div>
-            <button
-              onClick={handleCheckBadges}
-              className="text-sm text-primary hover:underline"
-            >
-              بررسی نشان‌های جدید
-            </button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {badges.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
-              هنوز نشانی نگرفتی. شروع کن به رأی دادن و شرکت در فعالیت‌ها تا نشان بگیری! 🏆
-            </p>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {badges.map((badge: any) => (
-                <div
-                  key={badge._id}
-                  className="flex flex-col items-center p-4 border rounded-lg hover:border-primary transition-colors"
-                >
-                  <div className="text-4xl mb-2">{badge.icon || '🏆'}</div>
-                  <div className="text-sm font-medium text-center">{badge.name}</div>
-                  <Badge variant="outline" className="mt-2 text-xs">
-                    {badge.rarity}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Activity Timeline */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-reverse space-x-2">
-            <Activity className="h-5 w-5" />
-            <span>فعالیت‌های اخیر</span>
-          </CardTitle>
-          <CardDescription>آخرین کارها و دستاوردهای تو</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {activities.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">هیچ فعالیتی ثبت نشده</p>
-            ) : (
-              activities.map((activity: any) => (
-                <div key={activity._id} className="flex items-start space-x-reverse space-x-4 pb-4 border-b last:border-0">
-                  <div className="flex-1">
-                    <p className="text-sm">{activity.action}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(activity.timestamp).toLocaleString('fa-IR')}
-                    </p>
-                  </div>
-                  {activity.pointsEarned > 0 && (
-                    <Badge variant="food" className="text-xs">
-                      +{activity.pointsEarned} امتیاز
-                    </Badge>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
