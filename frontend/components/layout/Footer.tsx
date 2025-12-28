@@ -93,10 +93,7 @@ export function Footer() {
           <p className="text-sm" dir="rtl">
             © {new Date().getFullYear()} فودبال. تمامی حقوق محفوظ است.
           </p>
-          <div className="flex flex-col md:flex-row items-center gap-2 text-sm text-gray-500">
-            <p>ساخته شده با ❤️ برای هواداران فوتبال ایران</p>
-            <span className="hidden md:inline">•</span>
-            <p dir="rtl">
+          <p dir="rtl">
               طراحی و اجرا توسط{' '}
               <a
                 href="https://alikiani.vercel.app/"
@@ -107,6 +104,10 @@ export function Footer() {
                 علی کیانی
               </a>
             </p>
+          <div className="flex flex-col md:flex-row items-center gap-2 text-sm text-gray-500">
+            <p>ساخته شده با ❤️ برای هواداران فوتبال ایران</p>
+            <span className="hidden md:inline">•</span>
+
           </div>
         </div>
       </div>
