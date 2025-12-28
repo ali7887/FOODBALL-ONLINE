@@ -13,6 +13,7 @@ import { QuickStatsBar } from '@/components/home/QuickStatsBar';
 import { SectionHeader } from '@/components/home/SectionHeader';
 import { FeaturedMatchMenu } from '@/components/home/FeaturedMatchMenu';
 import { LeaderboardPreview } from '@/components/home/LeaderboardPreview';
+import { CTASection } from '@/components/home/CTASection';
 import { TrendingUp, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -128,6 +129,9 @@ export function HomePage() {
 
       {/* Leaderboard Preview */}
       {leaderboard.length > 0 && <LeaderboardPreview topUsers={leaderboard} />}
+
+      {/* CTA Section */}
+      <CTASection />
     </div>
   );
 }
