@@ -48,7 +48,7 @@ export function HomePage() {
       {/* Hero Section */}
       <section className="text-center space-y-4 py-12">
         <h1 className="text-4xl md:text-6xl font-semibold text-gray-800" style={{ fontFamily: 'Vazirmatn, sans-serif' }}>
-          به فوتبال آنلاین خوش آمدید ⚽
+          به فودبال آنلاین خوش آمدید ⚽
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           پلتفرم داده‌های فوتبال ایران با طعم کباب و پیتزا! بازیکنان را دنبال کن، نقل‌وانتقالات را ببین و برای صدر جدول بجنگ 🏆

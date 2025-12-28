@@ -5,6 +5,31 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 // Store reference will be set dynamically
 let authStore: any = null;
 
+// Base types for pagination and sorting
+interface BaseQueryParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+interface PlayersQueryParams extends BaseQueryParams {
+  club?: string;
+  position?: string;
+  search?: string;
+}
+
+interface RumorsQueryParams extends BaseQueryParams {
+  player?: string;
+  toClub?: string;
+  status?: string;
+  minProbability?: number;
+}
+
+interface LeaderboardQueryParams extends BaseQueryParams {
+  // Leaderboard-specific params can be added here if needed
+}
+
 export function setAuthStore(store: any) {
   authStore = store;
 }
@@ -135,15 +160,7 @@ class ApiClient {
   }
 
   // Player methods
-  async getPlayers(params?: {
-    page?: number;
-    limit?: number;
-    club?: string;
-    position?: string;
-    search?: string;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-  }) {
+  async getPlayers(params?: PlayersQueryParams) {
     const response = await this.client.get('/players', { params });
     return response.data;
   }
@@ -177,14 +194,7 @@ class ApiClient {
   }
 
   // Rumor methods
-  async getRumors(params?: {
-    page?: number;
-    limit?: number;
-    player?: string;
-    toClub?: string;
-    status?: string;
-    minProbability?: number;
-  }) {
+  async getRumors(params?: RumorsQueryParams) {
     const response = await this.client.get('/rumors', { params });
     return response.data;
   }
@@ -212,7 +222,7 @@ class ApiClient {
   }
 
   // Gamification methods
-  async getLeaderboard(params?: { page?: number; limit?: number; sortBy?: string; sortOrder?: 'asc' | 'desc' }) {
+  async getLeaderboard(params?: LeaderboardQueryParams) {
     const response = await this.client.get('/gamification/leaderboard', { params });
     return response.data;
   }
