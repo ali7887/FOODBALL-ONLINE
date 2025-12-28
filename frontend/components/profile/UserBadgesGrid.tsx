@@ -54,9 +54,8 @@ export function UserBadgesGrid({ badges, loading }: UserBadgesGridProps) {
             category: badge.category,
             rarity: badge.rarity,
             description: '',
-            isActive: true,
           }}
-          earnedAt={badge.earnedAt}
+          earnedAt={new Date(badge.earnedAt)}
         />
       ))}
     </div>
