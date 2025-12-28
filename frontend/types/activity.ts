@@ -30,6 +30,13 @@ export interface GetActivityParams {
   activityType?: ActivityType;
 }
 
+export interface GetUserActivitiesParams {
+  username: string;
+  page?: number;
+  limit?: number;
+  activityType?: ActivityType;
+}
+
 export interface ActivityResponse {
   activities: Activity[];
   pagination: {

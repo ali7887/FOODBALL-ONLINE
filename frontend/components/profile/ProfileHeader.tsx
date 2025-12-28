@@ -55,9 +55,10 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           {/* Level Progress */}
           <div className="mb-3">
             <LevelIndicator
-              level={profile.level}
-              points={profile.points}
-              showLabel={true}
+              currentLevel={profile.level}
+              currentPoints={profile.points}
+              pointsToNextLevel={100 - (profile.points % 100)}
+              totalPoints={profile.points}
             />
           </div>
 
