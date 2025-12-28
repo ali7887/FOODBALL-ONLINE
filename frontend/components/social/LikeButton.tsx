@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart } from 'lucide-react';
+import { Heart, Loader2 } from 'lucide-react';
 import { likesApi } from '@/lib/api/likes';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { LikeableEntity } from '@/types/likes';
@@ -42,10 +42,13 @@ export function LikeButton({
 
   const handleLike = useCallback(async () => {
     if (!isAuthenticated || loading) {
+      if (!isAuthenticated) {
+        alert('برای لایک کردن، لطفاً وارد حساب کاربری‌ات بشو.');
+      }
       return;
     }
 
-    // Optimistic update
+    // Optimistic update with visual feedback
     const newLiked = !liked;
     const newCount = newLiked ? count + 1 : Math.max(0, count - 1);
     
@@ -68,6 +71,7 @@ export function LikeButton({
       setLiked(!newLiked);
       setCount(count);
       console.error('Error toggling like:', error);
+      alert('خطا در ثبت لایک. لطفاً دوباره تلاش کن.');
     } finally {
       setLoading(false);
     }
@@ -78,9 +82,15 @@ export function LikeButton({
   }
 
   const sizeClasses = {
-    sm: 'h-8 px-2 text-xs',
-    md: 'h-9 px-3 text-sm',
-    lg: 'h-10 px-4 text-base',
+    sm: 'h-8 px-2.5 text-xs min-w-[44px]',
+    md: 'h-9 px-3 text-sm min-w-[44px]',
+    lg: 'h-10 px-4 text-base min-w-[44px]',
+  };
+
+  const iconSizes = {
+    sm: 'h-3.5 w-3.5',
+    md: 'h-4 w-4',
+    lg: 'h-5 w-5',
   };
 
   return (
@@ -91,22 +101,32 @@ export function LikeButton({
       disabled={loading}
       className={cn(
         sizeClasses[size],
+        'flex items-center gap-1.5 transition-all duration-150',
         liked
-          ? 'text-red-600 hover:text-red-700 hover:bg-red-50'
-          : 'text-gray-600 hover:text-tm-green hover:bg-gray-50',
+          ? 'text-red-600 hover:text-red-700 hover:bg-red-50 active:scale-95'
+          : 'text-gray-600 hover:text-gray-700 hover:bg-gray-50 active:scale-95',
+        loading && 'opacity-60 cursor-not-allowed',
         className
       )}
       title={liked ? 'لایک را بردار' : 'لایک کن'}
+      aria-label={liked ? 'لایک را بردار' : 'لایک کن'}
     >
-      <Heart
-        className={cn(
-          'ml-1',
-          size === 'sm' ? 'h-3 w-3' : size === 'md' ? 'h-4 w-4' : 'h-5 w-5',
-          liked && 'fill-current'
-        )}
-      />
-      {count > 0 && <span className="font-medium">{count}</span>}
+      {loading ? (
+        <Loader2 className={cn(iconSizes[size], 'animate-spin')} />
+      ) : (
+        <Heart
+          className={cn(
+            iconSizes[size],
+            'transition-transform duration-150',
+            liked && 'fill-current scale-110'
+          )}
+        />
+      )}
+      {count > 0 && (
+        <span className="font-medium" dir="ltr">
+          {count}
+        </span>
+      )}
     </Button>
   );
 }
-

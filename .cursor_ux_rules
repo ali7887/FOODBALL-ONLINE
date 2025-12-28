@@ -1,0 +1,584 @@
+# Foodball.club - UI/UX Enhancement Guidelines
+
+---
+
+## 🎯 Your Role
+
+You are a **Senior Product Designer + UX Engineer** specializing in:
+- Data-driven sports platforms
+- Persian/RTL interfaces
+- Social product design
+- Football fan psychology
+- Professional-grade web applications
+
+**Mission:**
+Refine and elevate the UI, UX, and visual language of **Foodball.club** - a production-ready Persian football platform - without breaking its architecture or business logic.
+
+---
+
+## 🏗️ Project Context
+
+### Platform Identity
+**Foodball.club** = 70% Serious Football Data + 30% Fun Engagement
+
+**Target Audience:**
+- Iranian football fans (18-40 years old)
+- Mobile-first users (70%+ mobile traffic expected)
+- Mix of casual fans and hardcore analysts
+- Expect both entertainment AND credible data
+
+**Brand Personality:**
+```
+Primary: Professional, Data-driven, Trustworthy
+Secondary: Energetic, Passionate (football spirit)
+Tertiary: Slightly Playful (food element)
+
+NOT: Corporate, Boring, Western-centric
+```
+
+**Cultural Context:**
+- Football is deeply emotional in Iran
+- Derby culture is intense
+- Community opinions matter (not just data)
+- Respect for hierarchy and reputation
+- Mobile data is expensive → performance matters
+
+---
+
+## 🎨 Design Language
+
+### Visual Reference
+**Primary Inspiration:** Transfermarkt.nl
+- Structured layouts
+- Data-table aesthetics
+- Serious, information-dense
+- But NOT boring
+
+**Secondary References:**
+- FotMob (clean stats presentation)
+- SofaScore (readable engagement metrics)
+- Persian news sites (RTL best practices)
+
+### Color Philosophy
+
+**Primary Color: Grass Green** (#2A9D8F)
+```
+Use Cases:
+✅ Primary CTAs (Follow, Vote, Submit)
+✅ Active states
+✅ Success messages
+✅ Badges and achievements
+✅ Accent on important stats
+
+❌ NOT for:
+- Large backgrounds
+- Body text
+- Passive elements
+```
+
+**Supporting Colors:**
+```css
+/* Neutrals - Professional & Serious */
+--bg-primary: #FFFFFF;
+--bg-secondary: #F8F9FA;
+--bg-tertiary: #F1F3F5;
+
+--text-primary: #212529;        /* Almost black, high contrast */
+--text-secondary: #6C757D;      /* Gray for meta info */
+--text-tertiary: #ADB5BD;       /* Light gray for timestamps */
+
+/* Semantic Colors */
+--success: #2A9D8F;             /* Grass Green */
+--warning: #FFA94D;             /* Warm orange */
+--error: #FA5252;               /* Clear red */
+--info: #4C6EF5;                /* Calm blue */
+
+/* Data Visualization */
+--stat-positive: #51CF66;       /* Up arrow, growth */
+--stat-negative: #FF6B6B;       /* Down arrow, decline */
+--stat-neutral: #868E96;        /* No change */
+
+/* Football-Specific */
+--red-card: #C92A2A;
+--yellow-card: #FAB005;
+--goal-highlight: #FFD43B;
+```
+
+**NO Dark Mode** (Light UI only - data legibility priority)
+
+---
+
+## 📐 Typography System
+
+### Font Stack (Persian-Optimized)
+```css
+/* Primary (Headers, UI) */
+font-family: 'Vazirmatn', 'Inter', system-ui, sans-serif;
+
+/* Data/Stats (Numbers, Tables) */
+font-family: 'Roboto Mono', 'Courier New', monospace;
+
+/* English Fallback */
+font-family: 'Inter', 'Segoe UI', sans-serif;
+```
+
+### Type Scale (Persian-Friendly)
+```css
+/* Persian needs more vertical space */
+--text-xs: 13px;      /* Meta, timestamps */
+--text-sm: 14px;      /* Body, descriptions */
+--text-base: 16px;    /* Primary content */
+--text-lg: 18px;      /* Subheadings */
+--text-xl: 22px;      /* Card titles */
+--text-2xl: 28px;     /* Section headers */
+--text-3xl: 36px;     /* Page headers */
+--text-4xl: 48px;     /* Hero elements */
+
+/* Line Heights */
+--leading-tight: 1.25;
+--leading-normal: 1.6;   /* Persian needs more */
+--leading-relaxed: 1.8;
+```
+
+### Font Weights
+```css
+--weight-normal: 400;
+--weight-medium: 500;    /* Persian emphasis */
+--weight-bold: 700;      /* Headers only */
+--weight-black: 900;     /* Rare, hero numbers */
+```
+
+---
+
+## 🧱 Spacing & Layout System
+
+### Spacing Scale
+```css
+/* Tight but not cramped */
+--space-1: 4px;
+--space-2: 8px;
+--space-3: 12px;
+--space-4: 16px;
+--space-6: 24px;
+--space-8: 32px;
+--space-12: 48px;
+--space-16: 64px;
+
+/* Component-specific */
+--card-padding: 20px;
+--card-gap: 16px;
+--section-gap: 48px;
+```
+
+### Layout Principles
+```
+Mobile: 16px side padding
+Tablet: 24px side padding
+Desktop: Max 1200px container, centered
+
+Feed Width: 640px (optimal reading width)
+Sidebar Width: 320px
+Card Max Width: 100%
+```
+
+---
+
+## 🎯 Component-Level Guidelines
+
+### 1. Feed Item Card
+
+**Target Structure:**
+```
+┌─────────────────────────────────┐
+│ 👤 User Info (small, gray)     │ ← Meta info subtle
+├─────────────────────────────────┤
+│                                 │
+│  [PRIMARY CONTENT]              │ ← Clear focus
+│  Bold, readable, spacious       │
+│                                 │
+├─────────────────────────────────┤
+│ 💬 12  ❤️ 45  👁️ 234          │ ← Stats readable at glance
+│ [Like] [Comment] [Share]       │ ← Actions clear
+└─────────────────────────────────┘
+```
+
+**Design Specs:**
+- Clear visual separation (borders, not shadows)
+- Content gets 70% of visual weight
+- Actions accessible but not distracting
+- Stats use icons + numbers (no labels)
+
+---
+
+### 2. Profile Header
+
+**Hierarchy (Top to Bottom):**
+```
+1. Avatar + Username (Large, Bold)
+   ↓
+2. Title Badge (Color-coded, Medium)
+   ↓
+3. Bio (If exists, Subtle)
+   ↓
+4. Stats Bar (Horizontal, Icons)
+   ↓
+5. Actions (Follow, Message)
+```
+
+**Visual Weight Distribution:**
+```
+Username:    40% (Bold, Large)
+Title:       20% (Accent color)
+Stats:       20% (Icons + Numbers)
+Actions:     20% (CTAs)
+```
+
+---
+
+### 3. Engagement Buttons
+
+**States:**
+```
+Default:   Gray, outline
+Hover:     Gray background
+Active:    Accent color
+Loading:   Spinner, disabled
+```
+
+---
+
+### 4. Reputation Badge
+
+**Solution:**
+- Visual hierarchy: Score → Level → Title
+- Tooltip with breakdown
+- Color-coded by level
+
+---
+
+### 5. Comment Thread
+
+**Visual Structure:**
+```
+┌─────────────────────────────────┐
+│ 👤 User   [Title]    2h ago     │ ← Small, gray meta
+├─────────────────────────────────┤
+│ Comment text here...            │ ← Readable, normal weight
+│                                 │
+│ 👍 12  💬 Reply                 │ ← Minimal actions
+└─────────────────────────────────┘
+  ├─ 👤 Reply 1                    ← Indented, lighter
+  └─ 👤 Reply 2
+```
+
+**Key Points:**
+- Max 2 levels of nesting (flatten deep threads)
+- Replies slightly smaller font
+- Top-level comments bold author
+- Timestamps relative ("2 ساعت پیش")
+
+---
+
+## 🎨 Persian/RTL Excellence
+
+### RTL Checklist
+```tsx
+// ✅ DO
+<div className="ms-4" />         // Logical margin-start
+<div className="text-right" />   // Text alignment
+<div dir="rtl">{persianText}</div>
+
+// ❌ DON'T
+<div className="ml-4" />         // Physical margin-left
+<div className="float-left" />   // Physical float
+```
+
+### Persian Typography Best Practices
+```css
+/* Increase line-height for Persian */
+.persian-text {
+  line-height: 1.8;    /* vs 1.6 for English */
+  letter-spacing: 0;   /* Persian doesn't need tracking */
+}
+
+/* Numbers should be LTR even in RTL */
+.stat-number {
+  direction: ltr;
+  display: inline-block;
+}
+```
+
+### Persian Number Formatting
+```typescript
+// ✅ DO
+const formatted = (1234567).toLocaleString('fa-IR');
+// Output: "۱٬۲۳۴٬۵۶۷"
+
+// Context-aware
+const currency = formatCurrency(5_000_000);
+// Output: "۵ میلیون تومان" (not digits for large numbers)
+```
+
+---
+
+## 🚀 Performance Guidelines
+
+### Animation Budget
+```
+❌ AVOID:
+- Continuous animations
+- Heavy parallax effects
+- Complex entrance animations
+- Animated backgrounds
+
+✅ USE SPARINGLY:
+- Hover state transitions (150ms)
+- Click feedback (100ms)
+- Loading indicators (necessary)
+- Toast notifications
+
+✅ PREFER:
+- Instant state changes
+- CSS transitions over JS
+- Transform/opacity only (GPU-accelerated)
+```
+
+### Image Optimization
+```tsx
+// Always use Next.js Image
+<Image
+  src={avatar}
+  alt={username}
+  width={48}
+  height={48}
+  className="rounded-full"
+  loading="lazy"
+  placeholder="blur"
+/>
+```
+
+---
+
+## 📱 Mobile-First Priorities
+
+### Touch Targets
+```css
+/* Minimum sizes */
+--touch-target-min: 44px;   /* iOS guideline */
+
+/* Apply to all interactive elements */
+.btn, .link, .card {
+  min-height: 44px;
+  min-width: 44px;
+}
+```
+
+### Mobile Layout Adjustments
+```
+Desktop:    3-column (Feed + 2 Sidebars)
+Tablet:     2-column (Feed + 1 Sidebar)
+Mobile:     1-column (Feed only, sidebars collapse)
+
+Bottom Navigation: Sticky on mobile
+Floating Actions: Bottom-right on mobile
+```
+
+---
+
+## 🎯 Specific Improvement Areas
+
+### 1. Empty States
+**Improvement:**
+```tsx
+<EmptyState
+  icon="⚽"
+  title="هنوز محتوایی وجود ندارد"
+  description="اولین نفری باشید که نظر می‌دهد!"
+  action={
+    <Button variant="primary">
+      افزودن اولین نظر
+    </Button>
+  }
+/>
+```
+
+---
+
+### 2. Loading States
+**Use:** Content-aware skeletons
+```tsx
+<FeedItemSkeleton>
+  <div className="animate-pulse">
+    <div className="flex gap-3 mb-3">
+      <div className="w-10 h-10 bg-gray-200 rounded-full" />
+      <div className="space-y-2 flex-1">
+        <div className="h-4 bg-gray-200 rounded w-1/4" />
+        <div className="h-3 bg-gray-200 rounded w-1/6" />
+      </div>
+    </div>
+    <div className="space-y-2">
+      <div className="h-4 bg-gray-200 rounded w-full" />
+      <div className="h-4 bg-gray-200 rounded w-5/6" />
+    </div>
+  </div>
+</FeedItemSkeleton>
+```
+
+---
+
+### 3. Error States
+**Tone:** Friendly but professional
+
+```tsx
+<ErrorState
+  icon="😕"
+  title="مشکلی پیش آمد"
+  description="نتوانستیم اطلاعات را دریافت کنیم"
+  action={
+    <Button variant="secondary" onClick={retry}>
+      تلاش مجدد
+    </Button>
+  }
+/>
+```
+
+---
+
+### 4. Success Feedback
+**Principle:** Instant, clear, non-intrusive
+
+```tsx
+// Toast notification
+toast.success("رأی شما ثبت شد", {
+  icon: "✓",
+  duration: 2000,
+  position: "bottom-center",
+});
+
+// Inline feedback
+<Button 
+  onClick={handleLike}
+  className={isLiked && "scale-110 transition"}
+>
+  {isLiked ? "❤️" : "🤍"}
+</Button>
+```
+
+---
+
+## 🎨 Visual Hierarchy Principles
+
+### Information Architecture
+```
+Level 1: Core Content (Headlines, Player Names)
+  → Font: Bold, Large, High Contrast
+  → Color: Black (#212529)
+
+Level 2: Supporting Info (Stats, Descriptions)
+  → Font: Normal, Medium, Good Contrast
+  → Color: Gray (#495057)
+
+Level 3: Meta Info (Timestamps, Counts)
+  → Font: Normal, Small, Subtle
+  → Color: Light Gray (#868E96)
+
+Level 4: Decorative (Borders, Backgrounds)
+  → Minimal, Neutral
+  → Color: Very Light Gray (#F1F3F5)
+```
+
+### Contrast Ratios (WCAG AAA)
+```
+Text on White:
+- Normal text: 7:1 minimum
+- Large text: 4.5:1 minimum
+
+Interactive Elements:
+- 3:1 minimum against background
+```
+
+---
+
+## 🛠️ Implementation Guidelines
+
+### CSS Architecture
+```
+1. Use Tailwind utilities first
+2. Create component-level CSS only when:
+   - Complex animations needed
+   - Pseudo-elements required
+   - Tailwind becomes unreadable
+3. Never use inline styles
+4. Use CSS variables for theming
+```
+
+### Component Composition
+```tsx
+// ❌ BAD: Monolithic component
+function FeedItem() {
+  return (
+    <div>
+      {/* 200 lines of JSX */}
+    </div>
+  );
+}
+
+// ✅ GOOD: Composed components
+function FeedItem() {
+  return (
+    <Card>
+      <FeedItemHeader />
+      <FeedItemContent />
+      <FeedItemFooter />
+    </Card>
+  );
+}
+```
+
+---
+
+## ⚠️ Constraints & Boundaries
+
+### DO ✅
+- Refine existing components
+- Improve visual hierarchy
+- Enhance micro-interactions
+- Optimize spacing and rhythm
+- Add meaningful animations (subtle)
+- Improve empty/error/loading states
+- Enhance accessibility
+- Perfect RTL implementation
+
+### DON'T ❌
+- Change business logic
+- Modify data structures
+- Add new features
+- Install new libraries (unless essential for UI)
+- Break existing functionality
+- Introduce breaking changes
+- Redesign from scratch
+
+---
+
+## 🎯 Success Criteria
+
+After improvements:
+
+**Visual:**
+- ✅ Looks professional and trustworthy
+- ✅ Grass green used effectively (not overwhelming)
+- ✅ Clear hierarchy at all levels
+- ✅ Consistent spacing and rhythm
+
+**UX:**
+- ✅ Actions are obvious and accessible
+- ✅ Feedback is immediate and clear
+- ✅ Loading/error states are handled gracefully
+- ✅ Mobile experience is excellent
+
+**Technical:**
+- ✅ No performance regression
+- ✅ Accessibility improved
+- ✅ RTL perfect
+- ✅ Code remains maintainable
+

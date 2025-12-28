@@ -14,8 +14,11 @@ import {
   TrendingUp,
   Newspaper,
   Activity,
-  ArrowRight,
-  Calendar,
+  ArrowLeft,
+  Clock,
+  Eye,
+  MessageCircle,
+  Heart,
 } from 'lucide-react';
 
 interface FeedItemRendererProps {
@@ -41,13 +44,13 @@ function FeedItemRendererComponent({ item }: FeedItemRendererProps) {
 
   const getTypeColor = () => {
     const colorMap = {
-      player: 'bg-blue-100 text-blue-700 border-blue-300',
-      team: 'bg-purple-100 text-purple-700 border-purple-300',
-      rumor: 'bg-tm-green/10 text-tm-green border-tm-green/30',
-      news: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-      activity: 'bg-gray-100 text-gray-700 border-gray-300',
+      player: 'bg-blue-50 text-blue-700 border-blue-200',
+      team: 'bg-purple-50 text-purple-700 border-purple-200',
+      rumor: 'bg-tm-green/5 text-tm-green border-tm-green/20',
+      news: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+      activity: 'bg-gray-50 text-gray-700 border-gray-200',
     };
-    return colorMap[item.type] || 'bg-gray-100 text-gray-700 border-gray-300';
+    return colorMap[item.type] || 'bg-gray-50 text-gray-700 border-gray-200';
   };
 
   const getItemLink = () => {
@@ -70,63 +73,75 @@ function FeedItemRendererComponent({ item }: FeedItemRendererProps) {
       case 'player':
         const playerData = item.data;
         return (
-          <div>
-            <p className="text-sm text-gray-700 mb-2">
+          <div className="space-y-1">
+            <p className="text-base text-gray-700 leading-relaxed">
               {playerData.action === 'transfer' && 'انتقال جدید'}
               {playerData.action === 'rumor' && 'شایعه جدید'}
               {playerData.action === 'update' && 'به‌روزرسانی'}
               {playerData.action === 'milestone' && 'دستاورد'}
               {' برای '}
-              <span className="font-semibold text-gray-900">{playerData.playerName}</span>
+              <span className="font-bold text-gray-900">{playerData.playerName}</span>
             </p>
+            {item.description && (
+              <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
+            )}
           </div>
         );
 
       case 'team':
         const teamData = item.data;
         return (
-          <div>
-            <p className="text-sm text-gray-700 mb-2">
+          <div className="space-y-1">
+            <p className="text-base text-gray-700 leading-relaxed">
               {teamData.action === 'transfer' && 'انتقال جدید'}
               {teamData.action === 'rumor' && 'شایعه جدید'}
               {teamData.action === 'match' && 'مسابقه جدید'}
               {teamData.action === 'update' && 'به‌روزرسانی'}
               {' برای '}
-              <span className="font-semibold text-gray-900">{teamData.teamName}</span>
+              <span className="font-bold text-gray-900">{teamData.teamName}</span>
             </p>
+            {item.description && (
+              <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
+            )}
           </div>
         );
 
       case 'rumor':
         const rumorData = item.data;
         return (
-          <div>
-            <p className="text-sm text-gray-700 mb-2">
-              <span className="font-semibold text-gray-900">{rumorData.playerName}</span>
+          <div className="space-y-1">
+            <p className="text-base text-gray-700 leading-relaxed">
+              <span className="font-bold text-gray-900">{rumorData.playerName}</span>
               {rumorData.fromClub && ` از ${rumorData.fromClub}`}
               {rumorData.toClub && ` به ${rumorData.toClub}`}
               {rumorData.probability !== undefined && (
-                <span className="mr-2 text-tm-green font-medium">
+                <span className="mr-2 text-tm-green font-semibold">
                   ({rumorData.probability}% احتمال)
                 </span>
               )}
             </p>
+            {item.description && (
+              <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
+            )}
           </div>
         );
 
       case 'news':
         return (
-          <div>
-            <p className="text-sm text-gray-700 mb-2">{item.description}</p>
+          <div className="space-y-1">
+            <p className="text-base text-gray-700 leading-relaxed font-medium">{item.title}</p>
+            {item.description && (
+              <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
+            )}
           </div>
         );
 
       case 'activity':
         const activityData = item.data;
         return (
-          <div>
-            <p className="text-sm text-gray-700 mb-2">
-              <span className="font-semibold text-gray-900">{activityData.userName}</span>
+          <div className="space-y-1">
+            <p className="text-base text-gray-700 leading-relaxed">
+              <span className="font-bold text-gray-900">{activityData.userName}</span>
               {' '}
               {item.description}
             </p>
@@ -134,7 +149,14 @@ function FeedItemRendererComponent({ item }: FeedItemRendererProps) {
         );
 
       default:
-        return <p className="text-sm text-gray-700 mb-2">{item.description}</p>;
+        return (
+          <div className="space-y-1">
+            <p className="text-base text-gray-700 leading-relaxed font-medium">{item.title}</p>
+            {item.description && (
+              <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
+            )}
+          </div>
+        );
     }
   };
 
@@ -143,67 +165,92 @@ function FeedItemRendererComponent({ item }: FeedItemRendererProps) {
   const itemLink = getItemLink();
 
   return (
-    <Card className="border-gray-200 hover:border-tm-green/50 transition-all duration-200 hover:shadow-md">
-      <CardContent className="p-4">
-        <div className="flex items-start space-x-reverse space-x-3">
-          {/* Type Icon */}
-          <div className={`p-2 rounded-lg ${typeColor} flex-shrink-0`}>
-            <Icon className="h-4 w-4" />
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 min-w-0">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-reverse space-x-2 mb-1 flex-wrap gap-1">
-                  <Badge variant="outline" className={`text-xs ${typeColor}`}>
-                    {item.type === 'player' && 'بازیکن'}
-                    {item.type === 'team' && 'تیم'}
-                    {item.type === 'rumor' && 'شایعه'}
-                    {item.type === 'news' && 'خبر'}
-                    {item.type === 'activity' && 'فعالیت'}
-                  </Badge>
-                  {item.source.type === 'player' && (
-                    <Link
-                      href={`/users/${item.source.id}`}
-                      className="text-xs text-gray-600 hover:text-tm-green transition-colors"
-                    >
-                      {item.source.name}
-                    </Link>
-                  )}
-                </div>
-                <h3 className="font-semibold text-gray-900 text-base mb-1">{item.title}</h3>
-              </div>
-            </div>
-
-            {/* Item-specific content */}
-            {renderItemContent()}
-
-            {/* Footer */}
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-              <div className="flex items-center space-x-reverse space-x-3 text-xs text-gray-500">
-                <div className="flex items-center space-x-reverse space-x-1">
-                  <Calendar className="h-3 w-3" />
-                  <span>{timeAgo}</span>
-                </div>
-                {item.metadata.relevanceScore !== undefined && (
-                  <span className="text-tm-green font-medium">
-                    مرتبط: {Math.round(item.metadata.relevanceScore * 100)}%
-                  </span>
+    <Card className="bg-white border border-gray-200 rounded-lg hover:border-tm-green/30 transition-colors duration-150">
+      <CardContent className="p-0">
+        {/* Header: User/Meta Info - Subtle */}
+        <div className="flex items-center justify-between px-5 pt-4 pb-0">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            {item.source.avatar && (
+              <Avatar className="h-8 w-8 border border-gray-200 flex-shrink-0">
+                <AvatarImage src={item.source.avatar} loading="lazy" />
+                <AvatarFallback className="bg-gray-100 text-gray-600 text-xs">
+                  {item.source.name[0]}
+                </AvatarFallback>
+              </Avatar>
+            )}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {item.source.type === 'player' ? (
+                  <Link
+                    href={`/users/${item.source.id}`}
+                    className="text-xs font-medium text-gray-600 hover:text-tm-green transition-colors"
+                  >
+                    {item.source.name}
+                  </Link>
+                ) : (
+                  <span className="text-xs font-medium text-gray-600">{item.source.name}</span>
                 )}
+                <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${typeColor}`}>
+                  {item.type === 'player' && 'بازیکن'}
+                  {item.type === 'team' && 'تیم'}
+                  {item.type === 'rumor' && 'شایعه'}
+                  {item.type === 'news' && 'خبر'}
+                  {item.type === 'activity' && 'فعالیت'}
+                </Badge>
               </div>
-              {itemLink !== '#' && (
-                <Link
-                  href={itemLink}
-                  className="flex items-center space-x-reverse space-x-1 text-xs text-tm-green hover:text-tm-green/80 transition-colors"
-                >
-                  <span>مشاهده</span>
-                  <ArrowRight className="h-3 w-3" />
-                </Link>
-              )}
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <Clock className="h-3 w-3 text-gray-400" />
+                <span className="text-[11px] text-gray-500">{timeAgo}</span>
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Content: Primary Focus - 70% visual weight */}
+        <div className="px-5 py-4">
+          {renderItemContent()}
+        </div>
+
+        {/* Footer: Stats + Actions - Clear separation */}
+        <div className="border-t border-gray-100 px-5 py-3 flex items-center justify-between bg-gray-50/50">
+          {/* Stats: Icons + Numbers (no labels) */}
+          <div className="flex items-center gap-4 text-xs text-gray-600">
+            {item.metadata.interactionCount !== undefined && (
+              <div className="flex items-center gap-1">
+                <MessageCircle className="h-3.5 w-3.5" />
+                <span className="font-medium" dir="ltr">
+                  {item.metadata.interactionCount}
+                </span>
+              </div>
+            )}
+            {item.metadata.popularityScore !== undefined && (
+              <div className="flex items-center gap-1">
+                <Eye className="h-3.5 w-3.5" />
+                <span className="font-medium" dir="ltr">
+                  {Math.round(item.metadata.popularityScore)}
+                </span>
+              </div>
+            )}
+            {item.metadata.relevanceScore !== undefined && (
+              <div className="flex items-center gap-1 text-tm-green">
+                <TrendingUp className="h-3.5 w-3.5" />
+                <span className="font-medium" dir="ltr">
+                  {Math.round(item.metadata.relevanceScore * 100)}%
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Action: Clear CTA */}
+          {itemLink !== '#' && (
+            <Link
+              href={itemLink}
+              className="flex items-center gap-1.5 text-xs font-medium text-tm-green hover:text-tm-green/80 transition-colors min-h-[44px] px-3 -my-3 -mx-3 items-center justify-center"
+            >
+              <span>مشاهده</span>
+              <ArrowLeft className="h-3 w-3" />
+            </Link>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -211,4 +258,3 @@ function FeedItemRendererComponent({ item }: FeedItemRendererProps) {
 }
 
 export const FeedItemRenderer = memo(FeedItemRendererComponent);
-
