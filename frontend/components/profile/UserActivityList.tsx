@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { usersApi } from '@/lib/api/users';
 import type { Activity, ActivityType, GetUserActivitiesParams } from '@/types/activity';
-import { MessageSquare, Heart, Award, TrendingUp, AtSign } from 'lucide-react';
+import { MessageSquare, Heart, Award, TrendingUp, AtSign, UserPlus, UserMinus } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { faIR } from 'date-fns/locale';
 
@@ -57,6 +57,8 @@ export function UserActivityList({ username, initialActivities = [], showFilter 
       BADGE_EARNED: Award,
       VOTE_SUBMITTED: TrendingUp,
       USER_MENTIONED: AtSign,
+      USER_FOLLOWED: UserPlus,
+      USER_UNFOLLOWED: UserMinus,
     };
     return iconMap[type] || MessageSquare;
   };
@@ -68,6 +70,8 @@ export function UserActivityList({ username, initialActivities = [], showFilter 
       BADGE_EARNED: 'text-yellow-600 bg-yellow-50',
       VOTE_SUBMITTED: 'text-blue-600 bg-blue-50',
       USER_MENTIONED: 'text-purple-600 bg-purple-50',
+      USER_FOLLOWED: 'text-tm-green bg-tm-green/10',
+      USER_UNFOLLOWED: 'text-gray-600 bg-gray-50',
     };
     return colorMap[type] || 'text-gray-600 bg-gray-50';
   };
@@ -105,7 +109,7 @@ export function UserActivityList({ username, initialActivities = [], showFilter 
           >
             همه
           </Button>
-          {(['COMMENT_CREATED', 'RUMOR_LIKED', 'BADGE_EARNED'] as ActivityType[]).map((type) => (
+          {(['COMMENT_CREATED', 'RUMOR_LIKED', 'BADGE_EARNED', 'USER_FOLLOWED'] as ActivityType[]).map((type) => (
             <Button
               key={type}
               variant={selectedType === type ? 'default' : 'outline'}
@@ -116,6 +120,7 @@ export function UserActivityList({ username, initialActivities = [], showFilter 
               {type === 'COMMENT_CREATED' && 'نظرات'}
               {type === 'RUMOR_LIKED' && 'لایک‌ها'}
               {type === 'BADGE_EARNED' && 'نشان‌ها'}
+              {type === 'USER_FOLLOWED' && 'دنبال‌کردن'}
             </Button>
           ))}
         </div>

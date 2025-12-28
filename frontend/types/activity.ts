@@ -3,7 +3,9 @@ export type ActivityType =
   | 'RUMOR_LIKED'
   | 'BADGE_EARNED'
   | 'VOTE_SUBMITTED'
-  | 'USER_MENTIONED';
+  | 'USER_MENTIONED'
+  | 'USER_FOLLOWED'
+  | 'USER_UNFOLLOWED';
 
 export interface ActivityAuthor {
   id: string;

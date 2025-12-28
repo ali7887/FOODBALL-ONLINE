@@ -20,6 +20,11 @@ export interface UserPublicProfile {
   stats: UserStats;
   badges: UserBadge[];
   recentActivities: Activity[];
+  followStatus?: {
+    isFollowing: boolean;
+    followersCount: number;
+    followingCount: number;
+  };
 }
 
 export interface UserStats {

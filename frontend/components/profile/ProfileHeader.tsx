@@ -47,9 +47,18 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           </div>
 
           {/* Title and Reputation */}
-          <div className="flex items-center space-x-reverse space-x-3 mb-3">
+          <div className="flex items-center space-x-reverse space-x-3 mb-3 flex-wrap gap-2">
             <UserTitleBadge title={profile.title} />
             <ReputationBadge reputation={profile.reputation} />
+            {profile.followStatus && (
+              <div className="flex items-center space-x-reverse space-x-2 text-sm text-gray-600">
+                <span className="font-medium">{profile.followStatus.followersCount}</span>
+                <span>دنبال‌کننده</span>
+                <span className="mx-1">•</span>
+                <span className="font-medium">{profile.followStatus.followingCount}</span>
+                <span>دنبال‌شده</span>
+              </div>
+            )}
           </div>
 
           {/* Level Progress */}

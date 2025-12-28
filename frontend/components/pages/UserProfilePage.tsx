@@ -8,6 +8,9 @@ import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { UserStatsGrid } from '@/components/profile/UserStatsGrid';
 import { UserBadgesGrid } from '@/components/profile/UserBadgesGrid';
 import { UserActivityList } from '@/components/profile/UserActivityList';
+import { FollowButton } from '@/components/profile/FollowButton';
+import { FollowersList } from '@/components/profile/FollowersList';
+import { FollowingList } from '@/components/profile/FollowingList';
 import type { UserPublicProfile } from '@/types/user';
 import { useRouter } from 'next/navigation';
 
@@ -78,7 +81,47 @@ export function UserProfilePage({ username }: UserProfilePageProps) {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container space-y-6">
         {/* Profile Header */}
-        <ProfileHeader profile={profile} />
+        <div className="relative">
+          <ProfileHeader profile={profile} />
+          {profile.followStatus && (
+            <div className="absolute top-6 left-6">
+              <FollowButton
+                targetUserId={profile._id}
+                initialIsFollowing={profile.followStatus.isFollowing}
+                initialFollowersCount={profile.followStatus.followersCount}
+                onFollowChange={(isFollowing, followersCount) => {
+                  // Update local state
+                  setProfile((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          followStatus: {
+                            ...prev.followStatus!,
+                            isFollowing,
+                            followersCount,
+                          },
+                        }
+                      : null
+                  );
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Follow Stats */}
+        {profile.followStatus && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FollowersList
+              username={username}
+              initialCount={profile.followStatus.followersCount}
+            />
+            <FollowingList
+              username={username}
+              initialCount={profile.followStatus.followingCount}
+            />
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div>
